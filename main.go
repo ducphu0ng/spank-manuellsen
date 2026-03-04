@@ -42,9 +42,13 @@ var sexyAudio embed.FS
 //go:embed audio/halo/*.mp3
 var haloAudio embed.FS
 
+//go:embed audio/manuellsen/*.mp3
+var manuellsenAudio embed.FS
+
 var (
 	sexyMode     bool
 	haloMode     bool
+	manuellsenMode bool
 	customPath   string
 	customFiles  []string
 	minAmplitude float64
@@ -194,7 +198,9 @@ Requires sudo (for IOKit HID access to the accelerometer).
 Use --sexy for a different experience. In sexy mode, the more you slap
 within a minute, the more intense the sounds become.
 
-Use --halo to play random audio clips from Halo soundtracks on each slap.`,
+Use --halo to play random audio clips from Halo soundtracks on each slap.
+
+Use --manuellsen to play random audio clips from Manuellsen on each slap.`,
 		Version: version,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return run(cmd.Context())
@@ -204,6 +210,7 @@ Use --halo to play random audio clips from Halo soundtracks on each slap.`,
 
 	cmd.Flags().BoolVarP(&sexyMode, "sexy", "s", false, "Enable sexy mode")
 	cmd.Flags().BoolVarP(&haloMode, "halo", "H", false, "Enable halo mode")
+	cmd.Flags().BoolVarP(&manuellsenMode, "manuellsen", "M", false, "Enable manuellsen mode")
 	cmd.Flags().StringVarP(&customPath, "custom", "c", "", "Path to custom MP3 audio directory")
 	cmd.Flags().StringSliceVar(&customFiles, "custom-files", nil, "Comma-separated list of custom MP3 files")
 	cmd.Flags().Float64Var(&minAmplitude, "min-amplitude", 0.05, "Minimum amplitude threshold (0.0-1.0, lower = more sensitive)")
@@ -227,11 +234,14 @@ func run(ctx context.Context) error {
 	if haloMode {
 		modeCount++
 	}
+    if manuellsenMode {
+		modeCount++
+	}
 	if customPath != "" || len(customFiles) > 0 {
 		modeCount++
 	}
 	if modeCount > 1 {
-		return fmt.Errorf("--sexy, --halo, and --custom/--custom-files are mutually exclusive; pick one")
+		return fmt.Errorf("--sexy, --halo, --manuellsen and --custom/--custom-files are mutually exclusive; pick one")
 	}
 
 	if minAmplitude < 0 || minAmplitude > 1 {
@@ -257,6 +267,8 @@ func run(ctx context.Context) error {
 		pack = &soundPack{name: "sexy", fs: sexyAudio, dir: "audio/sexy", mode: modeEscalation}
 	case haloMode:
 		pack = &soundPack{name: "halo", fs: haloAudio, dir: "audio/halo", mode: modeRandom}
+	case manuellsenMode:
+		pack = &soundPack{name: "manuellsen", fs: manuellsenAudio, dir: "audio/manuellsen", mode: modeRandom}
 	default:
 		pack = &soundPack{name: "pain", fs: painAudio, dir: "audio/pain", mode: modeRandom}
 	}
