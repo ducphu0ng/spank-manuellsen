@@ -1,4 +1,4 @@
-# spank
+# spank BUT Extended with Manuellsen Meme Audio
 
 Slap your MacBook, it yells back.
 
@@ -17,7 +17,7 @@ Uses the Apple Silicon accelerometer (Bosch BMI286 IMU via IOKit HID) to detect 
 
 ## Install
 
-Download from the [latest release](https://github.com/taigrr/spank/releases/latest).
+Download from the [latest release](https://github.com/ducphu0ng/spank-manuellsen/releases/latest).
 
 Or build from source:
 
@@ -36,6 +36,9 @@ sudo spank --sexy
 
 # Halo mode — plays Halo death sounds when slapped
 sudo spank --halo
+
+# Manuellsen mode — plays Manuellsen Meme Audio
+sudo spank --manuellsen
 
 # Custom mode — plays your own MP3 files from a directory
 sudo spank --custom /path/to/mp3s
